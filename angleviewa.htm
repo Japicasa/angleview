@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+        <title>GliderThrow</title>
+        <style>
+            div,input{padding:5px;font-size:1em;}
+            input{width:95%;}
+            body{text-align: center;font-family:verdana;}
+            button{border:0;border-radius:0.3rem;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}
+        </style>
+    </head>
+    <body>
+      <h1>GliderThrow</h1>
+      <h1>Angle View</h1>
+        <div style="text-align:left;display:inline-block;min-width:260px;">
+            <form>
+
+                <p>
+                    <button style="background-color: #990E10; color: white; font-weight: bold; font-size: 1.5em" id="alfaRA">Sensor 1</button>
+                </p>
+                <p>
+                    <button style="background-color: #0A6A1B; color: white; font-weight: bold; font-size: 1.5em" id="alfaRB">Sensor 2</button>
+                </p>
+				<p>
+                    <button style="background-color: #0174DF; color: white; font-weight: bold; font-size: 1.5em" id="alfadiff">Differential</button>
+                </p>
+                <p>
+                    <button style="background-image: linear-gradient(to left, #ff0000, #0000ff);" type="submit" formaction="/throwview">Go to Throws Page</button>
+                </p>
+                <p>
+                    <button style="background-image: linear-gradient(to left, #ff6666, #6666ff);" type="submit" formaction="/datum">Reset Angles</button>
+                </p>
+                <!--p>
+                    <button  style="background-image: linear-gradient(to right, #ff6666, #6666ff);" type="submit" formaction="/bajarunadecima">Bajar una decima</button>
+                </p>
+                <p>
+                    <button  style="background-image: linear-gradient(to right, #ff0000, #0000ff);" type="submit" formaction="/bajarungrado">Bajar un grado</button>
+                </p-->
+
+
+            </form>
+        </div>
+        <script>
+
+			function getalfaRA()
+			{
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var str = this.responseText;
+                    var myarr = str.split(":");
+                    document.getElementById("alfaRA").innerHTML = myarr[0];
+                    document.getElementById("alfaRB").innerHTML = myarr[1];
+					document.getElementById("alfadiff").innerHTML = myarr[2];
+                }
+            };
+            xmlhttp.open("GET", "alfaRArq", true);
+			xmlhttp.setRequestHeader('Cache-Control', 'no-cache');
+            xmlhttp.send();
+			}
+			getalfaRA()
+
+			setInterval(getalfaRA, 600);
+
+
+        </script>
+
+    </body>
+</html>

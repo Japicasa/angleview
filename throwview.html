@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+        <title>GliderThrow</title>
+        <style>
+            div,input{padding:5px;font-size:1em;}
+            input{width:95%;}
+            body{text-align: center;font-family:verdana;}
+            button{border:0;border-radius:0.3rem;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}
+            canvas {
+                -ms-transform: rotate(90deg); /* IE 9 */
+                -webkit-transform: rotate(90deg); /* Safari */
+                transform: rotate(90deg);
+            }
+        </style>
+        <script type="text/javascript" src="./gauge.min.js"></script>
+    </head>
+    <body>
+      <h1>GliderThrow</h1>
+      <h1>Angle View</h1>
+        <canvas id="sensor1"></canvas>
+        <div style="text-align:left;display:inline-block;min-width:260px;">
+            <form>
+
+                <p>
+                    <button style="background-color: #990E10; color: white; font-weight: bold; font-size: 1.5em" id="alfaRA">Sensor 1</button>
+                </p>
+                <p>
+                    <button style="background-color: #0A6A1B; color: white; font-weight: bold; font-size: 1.5em" id="alfaRB">Sensor 2</button>
+                </p>
+				<p>
+                    <button style="background-color: #0174DF; color: white; font-weight: bold; font-size: 1.5em" id="alfadiff">Differential</button>
+                </p>
+                <p>
+                    <button style="background-image: linear-gradient(to left, #ff0000, #0000ff);" type="submit" formaction="/throwview">Go to Throws Page</button>
+                </p>
+                <p>
+                    <button style="background-image: linear-gradient(to left, #ff6666, #6666ff);" type="submit" formaction="/datum">Reset Angles</button>
+                </p>
+                <!--p>
+                    <button  style="background-image: linear-gradient(to right, #ff6666, #6666ff);" type="submit" formaction="/bajarunadecima">Bajar una decima</button>
+                </p>
+                <p>
+                    <button  style="background-image: linear-gradient(to right, #ff0000, #0000ff);" type="submit" formaction="/bajarungrado">Bajar un grado</button>
+                </p-->
+
+
+            </form>
+        </div>
+        <script>
+            var gauge
+
+			function getalfaRA()
+			{
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var str = this.responseText;
+                        var myarr = str.split(":");
+                        document.getElementById("alfaRA").innerHTML = myarr[0];
+                        document.getElementById("alfaRB").innerHTML = myarr[1];
+    					document.getElementById("alfadiff").innerHTML = myarr[2];
+                        // console.log(myarr[0].slice(10,-4))
+                        setValue(myarr[0].slice(10, -4))
+                    }
+                };
+                xmlhttp.open("GET", "alfaRArq", true);
+    			xmlhttp.setRequestHeader('Cache-Control', 'no-cache');
+                xmlhttp.send();
+			}
+            printGauge()
+			getalfaRA()
+
+			setInterval(getalfaRA, 600);
+
+
+            function printGauge() {
+                var opts = {
+                    angle: 0, // The span of the gauge arc
+                    lineWidth: 0.44, // The line thickness
+                    radiusScale: 1, // Relative radius
+                    pointer: {
+                        length: 0.6, // // Relative to gauge radius
+                        strokeWidth: 0.042, // The thickness
+                        color: '#000000' // Fill color
+                    },
+                    limitMax: false,     // If false, max value increases automatically if value > maxValue
+                    limitMin: false,     // If true, the min value of the gauge will be fixed
+                    colorStart: '#6FADCF',   // Colors
+                    colorStop: '#8FC0DA',    // just experiment with them
+                    strokeColor: '#E0E0E0',  // to see which ones work best for you
+                    generateGradient: true,
+                    highDpiSupport: true,     // High resolution support
+                };
+                var target = document.getElementById('sensor1'); // your canvas element
+                this.gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+                this.gauge.maxValue = 90; // set max gauge value
+                this.gauge.setMinValue(-90);  // Prefer setter over gauge.minValue = 0
+                this.gauge.animationSpeed = 128; // set animation speed (32 is default value)
+                this.gauge.set(0);
+            }
+
+            function setValue(stringAngle) {
+                if (this.gauge) {
+                    var floatAngle = parseFloat(stringAngle)
+                    this.gauge.set(floatAngle); // set actual value
+                }
+            }
+
+
+        </script>
+
+    </body>
+</html>
